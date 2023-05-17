@@ -7,6 +7,7 @@ public class Input {
     String file;
 
     String product;
+    String error;
 
     public String getFile() {
         return file;
@@ -31,4 +32,11 @@ public class Input {
                 ", product='" + product + '\'' +
                 '}';
     }
+    public String errortoString() {
+        return "Input{" +
+                "file='" + file + '\'' +
+                ", error='" + product + '\'' +
+                '}';
+    }
+
 }
