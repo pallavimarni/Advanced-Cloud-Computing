@@ -1,10 +1,12 @@
-package com.A1.docker1;
+package com.A1.docker2;
+
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 @Component
 public class Input {
     String file;
+
     String product;
 
     int sum;
@@ -31,7 +33,6 @@ public class Input {
     public void setSum(int sum) {
         this.sum= sum;
     }
-
     @Override
     public String toString() {
         return "{" +
@@ -39,11 +40,4 @@ public class Input {
                 ", sum='" + sum + '\'' +
                 '}';
     }
-    public String errortoString() {
-        return "{" +
-                "file='" + file + '\'' +
-                ", error='" + product + '\'' +
-                '}';
-    }
-
 }
