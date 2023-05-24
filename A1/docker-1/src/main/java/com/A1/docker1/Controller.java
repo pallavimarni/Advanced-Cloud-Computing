@@ -11,10 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 @RestController
 public class Controller {
@@ -36,9 +33,55 @@ public class Controller {
             return input.errortoString();
         }
 
-        //Logic to check if input file is in CSV format
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int lineNumber = 1;
+            boolean isValidFormat = true;
+
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values.length != 2 || values[0].trim().isEmpty() || values[1].trim().isEmpty()) {
+                    isValidFormat = false;
+                    break;
+                }
+                lineNumber++;
+            }
+
+            if (!isValidFormat) {
+                input.setProduct("Input file not in CSV format.");
+                input.errortoString();
+                return input.errortoString();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String firstLine = br.readLine();
+
+            if (firstLine != null) {
+                String[] headers = firstLine.split(",");
+
+                if (headers.length != 2 || !headers[0].trim().equalsIgnoreCase("product")
+                        || !headers[1].trim().equalsIgnoreCase("amount")) {
+                    {
+                        input.setProduct("Input file not in CSV format.");
+                        input.errortoString();
+                        return input.errortoString();
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
+
             String line;
             while ((line = br.readLine()) != null) {
 
@@ -46,15 +89,17 @@ public class Controller {
                 if (commaCount < 1) {
                     input.setProduct("Input file not in CSV format.");
                     input.errortoString();
+                    return input.errortoString();
                 }
             }
+
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("An error occurred while reading the file.");
         }
 
         String url = "http://docker2:6001/cal";
-        String payload = "{\"file\":\"data.txt\",\"product\":\"wheat\"}";
+        String payload = "{\"file\":\"" + input.getFile().toString() + "\",\"product\":\"" + input.getProduct().toString() + "\"}";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -71,7 +116,6 @@ public class Controller {
         );
 
         Response responseBody = response.getBody();
-
         input.setSum(responseBody.getSum());
         return input.toString();
     }
