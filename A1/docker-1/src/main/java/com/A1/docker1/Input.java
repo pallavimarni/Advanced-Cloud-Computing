@@ -1,5 +1,5 @@
 package com.A1.docker1;
-
+import org.json.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 @Component
@@ -34,16 +34,24 @@ public class Input {
 
     @Override
     public String toString() {
-        return "{" +
-                "file='" + file + '\'' +
-                ", sum='" + sum + '\'' +
-                '}';
+
+        JSONObject jsonPayload = new JSONObject();
+        jsonPayload.put("file", file);
+        jsonPayload.put("sum", sum);
+        return jsonPayload.toString();
+    }
+
+    public String errortoStringNull() {
+        JSONObject jsonPayload = new JSONObject();
+        jsonPayload.put("file", JSONObject.NULL);
+        jsonPayload.put("error", product);
+        return jsonPayload.toString();
     }
     public String errortoString() {
-        return "{" +
-                "file='" + file + '\'' +
-                ", error='" + product + '\'' +
-                '}';
-    }
+            JSONObject jsonPayload = new JSONObject();
+            jsonPayload.put("file", file);
+            jsonPayload.put("error", product);
+            return jsonPayload.toString();
+        }
 
 }

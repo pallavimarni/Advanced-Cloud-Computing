@@ -29,8 +29,4 @@ public class Response {
         this.sum = sum;
     }
 
-    @Override
-    public String toString() {
-        return "Response [file=" + file + ", sum=" + sum + "]";
-    }
 }

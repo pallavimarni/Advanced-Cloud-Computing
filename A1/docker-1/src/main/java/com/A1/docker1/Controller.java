@@ -12,21 +12,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
+import java.util.regex.Pattern;
 
 @RestController
 public class Controller {
     @PostMapping(value = "/calculate")
     public String validate(@RequestBody Input input) {
-
+        if(input.getFile() == null){
+            input.setProduct("Invalid JSON input.");
+            return input.errortoStringNull();
+        }
         //Logic to check if JSON input is valid
-        if (input.getFile() == null || input.getFile() == "null" || input.getFile() == "") {
+        if ( input.getFile() == "null" || input.getFile() == "") {
             input.setProduct("Invalid JSON input.");
             return input.errortoString();
         }
 
 
         //Logic to check if file exists
-        String filePath = "/app/"+input.getFile().toString();
+        String filePath = "C:/Users/17827/Desktop/group25/marni/A1/"+input.getFile().toString();
         File file = new File(filePath);
         if (!file.exists()) {
             input.setProduct("File not found.");
@@ -78,6 +82,32 @@ public class Controller {
             throw new RuntimeException(e);
         }
 
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int lineNumber = 0;
+            while ((line = reader.readLine()) != null) {
+                if(lineNumber == 0){
+                    lineNumber++;
+                    continue;
+                }
+
+                String[] values = line.split(",");
+                if (values.length == 2) {
+                    String product = values[0].trim();
+                    String amountStr = values[1].trim();
+
+                    if (!Pattern.matches("\\d+", amountStr)) {
+                        input.setProduct("Input file not in CSV format.");
+                        input.errortoString();
+                        return input.errortoString();
+                    }
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
@@ -98,7 +128,7 @@ public class Controller {
             System.out.println("An error occurred while reading the file.");
         }
 
-        String url = "http://docker2:6001/cal";
+        String url = "http://localhost:6001/cal";
         String payload = "{\"file\":\"" + input.getFile().toString() + "\",\"product\":\"" + input.getProduct().toString() + "\"}";
 
         HttpHeaders headers = new HttpHeaders();
