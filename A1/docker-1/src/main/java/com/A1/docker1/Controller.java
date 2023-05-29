@@ -30,7 +30,7 @@ public class Controller {
 
 
         //Logic to check if file exists
-        String filePath = "C:/Users/17827/Desktop/group25/marni/A1/"+input.getFile().toString();
+        String filePath = "/app/"+input.getFile().toString();
         File file = new File(filePath);
         if (!file.exists()) {
             input.setProduct("File not found.");
@@ -128,7 +128,7 @@ public class Controller {
             System.out.println("An error occurred while reading the file.");
         }
 
-        String url = "http://localhost:6001/cal";
+        String url = "http://docker2:6001/cal";
         String payload = "{\"file\":\"" + input.getFile().toString() + "\",\"product\":\"" + input.getProduct().toString() + "\"}";
 
         HttpHeaders headers = new HttpHeaders();
