@@ -12,10 +12,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.regex.Pattern;
 
 @RestController
 public class Controller {
+
+    @PostMapping(value = "/store-file")
+    public String storeFile(@RequestBody Input input) {
+        if (input.getFile() != null && input.getData() != null) {
+            try {
+                String filePath = "/app/" + input.getFile();
+                Path file = Path.of(filePath);
+                Files.writeString(file, input.getData(), StandardOpenOption.CREATE);
+                input.setProduct("Success");
+                return input.storetoString();
+            } catch (IOException e) {
+                input.setProduct("Error while storing the file to the storage.");
+                return input.errortoString();
+            }
+        } else {
+            input.setProduct("Invalid JSON input.");
+            return input.errortoStringNull();
+        }
+    }
+
     @PostMapping(value = "/calculate")
     public String validate(@RequestBody Input input) {
         if(input.getFile() == null){
@@ -30,7 +53,7 @@ public class Controller {
 
 
         //Logic to check if file exists
-        String filePath = "C:/Users/17827/Desktop/Cloud/Kubernetes/KubernetesAssignment/"+input.getFile().toString();
+        String filePath = "/app/"+input.getFile().toString();
         File file = new File(filePath);
         if (!file.exists()) {
             input.setProduct("File not found.");
@@ -128,7 +151,7 @@ public class Controller {
             System.out.println("An error occurred while reading the file.");
         }
 
-        String url = "http://localhost:6001/cal";
+        String url = "http://container2:6001/cal";
         String payload = "{\"file\":\"" + input.getFile().toString() + "\",\"product\":\"" + input.getProduct().toString() + "\"}";
 
         HttpHeaders headers = new HttpHeaders();

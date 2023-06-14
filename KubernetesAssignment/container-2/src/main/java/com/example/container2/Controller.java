@@ -16,7 +16,7 @@ import java.util.Map;
 public class Controller {
     @PostMapping(value = "/cal")
     public ResponseEntity<Response> sum(@RequestBody Input input) {
-        String filePath = "C:/Users/17827/Desktop/Cloud/Kubernetes/KubernetesAssignment/"+input.getFile().toString();
+        String filePath = "/app/"+input.getFile().toString();
 
         String targetProduct = input.getProduct().toString();
         int total = 0;

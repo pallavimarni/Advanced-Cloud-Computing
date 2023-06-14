@@ -8,6 +8,7 @@ public class Input {
     String file;
     String product;
 
+    String data;
     int sum;
 
     public String getFile() {
@@ -17,6 +18,15 @@ public class Input {
     public void setFile(String file) {
         this.file = file;
     }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
 
     public String getProduct() {
         return product;
@@ -46,6 +56,13 @@ public class Input {
         JSONObject jsonPayload = new JSONObject();
         jsonPayload.put("file", JSONObject.NULL);
         jsonPayload.put("error", product);
+        return jsonPayload.toString();
+    }
+
+    public String storetoString() {
+        JSONObject jsonPayload = new JSONObject();
+        jsonPayload.put("file", file);
+        jsonPayload.put("message", product);
         return jsonPayload.toString();
     }
     public String errortoString() {
