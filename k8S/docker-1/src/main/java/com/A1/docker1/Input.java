@@ -2,11 +2,15 @@ package com.A1.docker1;
 import org.json.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
+import org.json.JSONObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.stereotype.Component;
 @Component
 public class Input {
     String file;
     String product;
 
+    String data;
     int sum;
 
     public String getFile() {
@@ -16,6 +20,15 @@ public class Input {
     public void setFile(String file) {
         this.file = file;
     }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
 
     public String getProduct() {
         return product;
@@ -47,11 +60,18 @@ public class Input {
         jsonPayload.put("error", product);
         return jsonPayload.toString();
     }
+
+    public String storetoString() {
+        JSONObject jsonPayload = new JSONObject();
+        jsonPayload.put("file", file);
+        jsonPayload.put("message", product);
+        return jsonPayload.toString();
+    }
     public String errortoString() {
-            JSONObject jsonPayload = new JSONObject();
-            jsonPayload.put("file", file);
-            jsonPayload.put("error", product);
-            return jsonPayload.toString();
-        }
+        JSONObject jsonPayload = new JSONObject();
+        jsonPayload.put("file", file);
+        jsonPayload.put("error", product);
+        return jsonPayload.toString();
+    }
 
 }

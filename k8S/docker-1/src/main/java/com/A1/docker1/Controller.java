@@ -12,10 +12,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.regex.Pattern;
 
 @RestController
 public class Controller {
+@PostMapping(value = "/store-file")
+public String storeFile(@RequestBody Input input) {
+    if (input.getFile() != null && input.getData() != null) {
+        try {
+            String containerFilePath = "/app/" + input.getFile().toString(); // Assuming the file path within the container starts with "/app/"
+            Path file = Paths.get(containerFilePath);
+            Files.writeString(file, input.getData(), StandardOpenOption.CREATE);
+            input.setProduct("Success");
+            return input.storetoString();
+        } catch (IOException e) {
+            input.setProduct(e.getStackTrace().toString());
+        
+            return input.errortoString();
+        }
+    } else {
+        input.setProduct("Invalid JSON input.");
+        return input.errortoStringNull();
+    }
+}
+
     @PostMapping(value = "/calculate")
     public String validate(@RequestBody Input input) {
         if(input.getFile() == null){
@@ -30,7 +54,7 @@ public class Controller {
 
 
         //Logic to check if file exists
-        String filePath = "/app/"+input.getFile().toString();
+         String filePath = "/app/"+input.getFile().toString();
         File file = new File(filePath);
         if (!file.exists()) {
             input.setProduct("File not found.");

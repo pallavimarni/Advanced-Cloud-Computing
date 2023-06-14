@@ -17,7 +17,6 @@ public class Controller {
     @PostMapping(value = "/cal")
     public ResponseEntity<Response> sum(@RequestBody Input input) {
         String filePath = "/app/"+input.getFile().toString();
-
         String targetProduct = input.getProduct().toString();
         int total = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
