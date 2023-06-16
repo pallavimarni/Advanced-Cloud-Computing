@@ -152,7 +152,7 @@ public String storeFile(@RequestBody Input input) {
             System.out.println("An error occurred while reading the file.");
         }
 
-        String url = "http://docker2:6001/cal";
+        String url = "http://34.135.203.228:6001/cal";
         String payload = "{\"file\":\"" + input.getFile().toString() + "\",\"product\":\"" + input.getProduct().toString() + "\"}";
 
         HttpHeaders headers = new HttpHeaders();

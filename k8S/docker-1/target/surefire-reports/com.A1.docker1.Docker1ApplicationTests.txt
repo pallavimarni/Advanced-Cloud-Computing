@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.A1.docker1.Docker1ApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.122 s - in com.A1.docker1.Docker1ApplicationTests
