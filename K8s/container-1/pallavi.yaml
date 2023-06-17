@@ -1,0 +1,32 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/cloud-389618/docker-1/a_1:latest'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/cloud-389618/docker-1/a_1:latest'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        export CLOUDSDK_COMPUTE_REGION=us-central1-c
+        export CLOUDSDK_CONTAINER_CLUSTER=my-cluster
+        export KUBECTL_VERSION=1.21
+        gcloud container clusters get-credentials my-cluster --region us-central1-c --project cloud-389618 --quiet &&
+        kubectl apply -f yaml/deployment.yaml
+        kubectl apply -f yaml/service.yaml
+
+images:
+  - 'us-central1-docker.pkg.dev/cloud-389618/docker-1/a_1:latest'
+
+
+
