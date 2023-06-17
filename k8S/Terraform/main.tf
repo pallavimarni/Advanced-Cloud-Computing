@@ -23,7 +23,6 @@ resource "google_container_cluster" "my_cluster" {
   node_config {
     machine_type = "e2-medium"
     disk_size_gb = 100
-    preemptible  = false
   }
 }
 
