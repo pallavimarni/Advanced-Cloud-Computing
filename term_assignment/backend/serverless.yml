@@ -1,0 +1,66 @@
+service: backend
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: us-east-1
+  role: arn:aws:iam::587818610762:role/LabRole
+
+
+functions:
+  createStory:
+    handler: api/create.story
+    environment:
+      STORY_TABLE_NAME: !Ref storyTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    events:
+      - http:
+          method: post
+          path: storyList
+          cors:
+            origins: "*"
+            headers: ${self.custom.allowHeaders}
+  getStory:
+    handler: api/get.story
+    environment:
+      STORY_TABLE_NAME: !Ref storyTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    events:
+      - http:
+          method: get
+          path: storyList
+          cors:
+            origins: "*"
+            headers: ${self.custom.allowHeaders}
+
+  updateStory:
+    handler: api/update.story
+    environment:
+      STORY_TABLE_NAME: !Ref storyTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    events:
+      - http:
+          method: put
+          path: storyList/{story_id}
+          cors:
+            origins: "*"
+            headers: ${self.custom.allowHeaders}
+resources:
+  Resources:
+    storyTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: storyTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: story_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: story_id
+            KeyType: HASH
