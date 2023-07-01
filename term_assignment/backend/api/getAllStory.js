@@ -14,18 +14,12 @@ var DocumentClient = new DynamoDB.DocumentClient({
 const STORY_TABLE_NAME = process.env.STORY_TABLE_NAME;
 
 module.exports.story = async(event,context,callback) => {
-    let story_id = event['queryStringParameters']['story_id'];
+
     try{
-        if(story_id){
-            story_id=story_id;
-        }
-        else{
-            story_id = send.getstoryID(event.headers);
-        }
+     
         const params ={
             TableName: STORY_TABLE_NAME,
-            FilterExpression: 'story_id = :story_id' ,
-            ExpressionAttributeValues: {':story_id': story_id}
+     
         };
        
         let data = await DocumentClient.scan(params).promise();

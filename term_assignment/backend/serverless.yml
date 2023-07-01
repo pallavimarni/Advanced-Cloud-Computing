@@ -51,6 +51,63 @@ functions:
           cors:
             origins: "*"
             headers: ${self.custom.allowHeaders}
+
+  deleteStory:
+    handler: api/delete.story
+    environment:
+      STORY_TABLE_NAME: !Ref storyTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    events:
+      - http:
+          method: put
+          path: storyList/delete/{story_id}
+          cors:
+            origins: "*"
+            headers: ${self.custom.allowHeaders}
+
+  getAllStory:
+    handler: api/getAllStory.story
+    environment:
+      STORY_TABLE_NAME: !Ref storyTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    events:
+      - http:
+          method: get
+          path: storyList/getallstories
+          cors:
+            origins: "*"
+            headers: ${self.custom.allowHeaders}
+
+  getDeletedStories:
+    handler: api/deletedStories.story
+    environment:
+      STORY_TABLE_NAME: !Ref storyTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    events:
+      - http:
+          method: get
+          path: storyList/deletedstories
+          cors:
+            origins: "*"
+            headers: ${self.custom.allowHeaders}
+
+            
+  deleteStoryId:
+    handler: api/deleteStoryId.story
+    environment:
+      STORY_TABLE_NAME: !Ref storyTable
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+
+    events:
+      - http:
+          method: delete
+          path: storyList/deleteStory/{story_id}
+          cors:
+            origins: "*"
+            headers: ${self.custom.allowHeaders}
 resources:
   Resources:
     storyTable:

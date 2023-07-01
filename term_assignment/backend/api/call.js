@@ -1,8 +1,8 @@
-let story = "";
+let story_id = "";
 
-const getStory =(headers) => {
-    story = header.story;
-    return story
+const getstoryID = (headers) => {
+    story_id = headers.story_id;
+    return story_id
 }
 const statement = (statusCode, data) => {
     return {
@@ -13,7 +13,7 @@ const statement = (statusCode, data) => {
             'Access-Control-Allow-Methods': "PUT, POST, DELETE, GET",
             'Access-Control-Allow-Credentials': true,
             'Content-Type': 'application/json',
-            'story': story,
+            'story_id': story_id,
 
         }
     }
@@ -21,5 +21,5 @@ const statement = (statusCode, data) => {
 
 module.exports ={
     statement,
-    story
+    story_id
 } 

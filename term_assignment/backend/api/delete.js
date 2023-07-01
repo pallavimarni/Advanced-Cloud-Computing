@@ -20,16 +20,12 @@ module.exports.story = async (event, context, callback) => {
             Key: {
                 story_id
             },
-            UpdateExpression: 'set #author = :author, #date = :date, #story = :story',
+            UpdateExpression: 'set #delete = :delete',
             ExpressionAttributeNames: {
-                '#author': 'author',
-                '#date': 'date',
-                '#story': 'story',
+                '#delete': 'delete',
             },
             ExpressionAttributeValues: {
-                ':author': data.author,
-                ':date': data.date,
-                ':story': data.story,
+                ':delete': data.delete,
             },
             ConditionExpression: 'attribute_exists(story_id)',
         };
