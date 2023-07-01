@@ -1,0 +1,63 @@
+* {
+    padding: 0;
+    margin :10;
+   
+
+}
+
+html{
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    background : #eee;
+    padding: 0;
+    background-image :url("https://www.transparenttextures.com/patterns/diagmonds-light.png");
+    background-color: #bee4ea;
+}
+
+#brand:hover {
+color: #bee4ea;
+}
+
+#hover:hover {
+    color: #bee4ea;
+}
+
+footer {
+    position: fixed;
+    text-align: center;
+    width : 100%;
+    height: 0.7rem;
+    bottom: 0;
+    margin-bottom: 15px;
+
+
+}
+
+.margin{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.login-signup {
+cursor: pointer;
+color: #536162
+}
+.login-signup:hover{
+   color: black
+}
+
+.custom-icon{
+color: black;
+}
+
+.fa-eye, .fa-eye-slash{
+    color: black;
+cursor : pointer;
+}
+
+.fa-eye:hover,.fa-eye-slash:hover {
+color: grey;
+}
