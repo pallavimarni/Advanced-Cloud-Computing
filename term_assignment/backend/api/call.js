@@ -1,9 +1,6 @@
 let story_id = "";
 
-const getstoryID = (headers) => {
-    story_id = headers.story_id;
-    return story_id
-}
+
 const statement = (statusCode, data) => {
     return {
         statusCode,

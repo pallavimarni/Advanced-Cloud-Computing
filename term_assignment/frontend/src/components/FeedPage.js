@@ -1,72 +1,117 @@
 import React, { useState } from 'react';
+import { Typography, makeStyles, Card, CardContent, Button, TextField } from '@material-ui/core';
 
-function FeedPage() {
-  const [stories, setStories] = useState([
+const useStyles = makeStyles((theme) => ({
+  container: {
+    marginTop: theme.spacing(4),
+  },
+  card: {
+    marginBottom: theme.spacing(2),
+  },
+  title: {
+    fontWeight: 'bold',
+    marginBottom: theme.spacing(1),
+  },
+  author: {
+    marginBottom: theme.spacing(1),
+  },
+  content: {
+    marginBottom: theme.spacing(1),
+  },
+  editButton: {
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const FeedPage = () => {
+  const classes = useStyles();
+
+  const [editableStoryId, setEditableStoryId] = useState(null);
+  const [editedStoryContent, setEditedStoryContent] = useState('');
+
+  const stories = [
     {
       id: 1,
       title: 'Story 1',
       content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      choices: ['Choice A', 'Choice B'],
-      selectedChoice: '',
+      date: '2023-07-14',
     },
     {
       id: 2,
       title: 'Story 2',
       content: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      choices: ['Choice X', 'Choice Y'],
-      selectedChoice: '',
+      date: '2023-07-13',
     },
-  ]);
+  ];
 
-  const handleChoiceSelect = (storyId, choice) => {
-    const updatedStories = stories.map((story) => {
-      if (story.id === storyId) {
-        return { ...story, selectedChoice: choice };
-      }
-      return story;
-    });
+  const handleEditClick = (storyId, storyContent) => {
+    setEditableStoryId(storyId);
+    setEditedStoryContent(storyContent);
+  };
 
-    setStories(updatedStories);
+  const handleStoryChange = (event) => {
+    setEditedStoryContent(event.target.value);
+  };
+
+  const handleSaveClick = () => {
+    // Implement the logic to save the edited story
+    console.log('Edited story:', editedStoryContent);
+
+    // Clear the editable story state
+    setEditableStoryId(null);
+    setEditedStoryContent('');
   };
 
   return (
-    <div className="container">
-      <h1>Story Feed</h1>
-      <div className="row">
+      <div className={classes.container}>
         {stories.map((story) => (
-          <div className="col-md-6" key={story.id}>
-            <div className="card mb-4">
-              <div className="card-body">
-                <h5 className="card-title">{story.title}</h5>
-                <p className="card-text">{story.content}</p>
-                <div className="mb-3">
-                  <strong>Select Outcome:</strong>
-                  {story.choices.map((choice, index) => (
-                    <div className="form-check" key={index}>
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name={`choice-${story.id}`}
-                        id={`choice-${story.id}-${index}`}
-                        checked={story.selectedChoice === choice}
-                        onChange={() => handleChoiceSelect(story.id, choice)}
+            <Card key={story.id} className={classes.card}>
+              <CardContent>
+                <Typography variant="h6" className={classes.title}>
+                  {story.title}
+                </Typography>
+                <Typography variant="subtitle1" className={classes.author}>
+                  {story.author}
+                </Typography>
+                {editableStoryId === story.id ? (
+                    <>
+                      <TextField
+                          multiline
+                          rows={4}
+                          variant="outlined"
+                          fullWidth
+                          value={editedStoryContent}
+                          onChange={handleStoryChange}
                       />
-                      <label
-                        className="form-check-label"
-                        htmlFor={`choice-${story.id}-${index}`}
+                      <br/>
+                      <br/>
+                      <Button variant="contained" color="primary" onClick={handleSaveClick}>
+                        Save
+                      </Button>
+                    </>
+                ) : (
+                    <>
+                      <Typography variant="body1" className={classes.content}>
+                        {story.content}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        Posted on: {story.date}
+                      </Typography>
+                      <Button
+                          variant="outlined"
+                          color="primary"
+                          className={classes.editButton}
+                          onClick={() => handleEditClick(story.id, story.content)}
                       >
-                        {choice}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+                        Edit
+                      </Button>
+                    </>
+                )}
+              </CardContent>
+            </Card>
         ))}
       </div>
-    </div>
   );
-}
+};
 
 export default FeedPage;

@@ -1,39 +1,39 @@
-var DynamoDB = require('aws-sdk/clients/dynamodb');
+const DynamoDB = require('aws-sdk/clients/dynamodb');
 const call = require('./call');
+const { v4: uuidv4 } = require('uuid');
 
-var DocumentClient = new DynamoDB.DocumentClient({
-    region: "us-east-1",
+const DocumentClient = new DynamoDB.DocumentClient({
+    region: 'us-east-1',
     maxRetries: 3,
-    httpOptions : {
-        timeout:5000,
-    }
-
-
+    httpOptions: {
+        timeout: 5000,
+    },
 });
 
 const STORY_TABLE_NAME = process.env.STORY_TABLE_NAME;
 
-module.exports.story = async(event,context,callback) => {
+module.exports.story = async (event, context, callback) => {
+    const { author, story, lastEditedId } = JSON.parse(event.body);
+    const storyId = uuidv4();
+    const currentDate = new Date().toISOString().split('T')[0];
 
-    let data = JSON.parse(event.body);
-    try{
-        const params ={
+
+    try {
+        const params = {
             TableName: STORY_TABLE_NAME,
-            Item : {
-                story_id : data.story_id,
-                author : data.author,
-                story : data.story,
-                date : data.date,
-                
+            Item: {
+                story_id: storyId,
+                author,
+                story,
+                date: currentDate,
+                lastEditedId,
             },
-            ConditionalExpression: 'attribute_already_exists(story_id)'
-        }
+            ConditionExpression: 'attribute_not_exists(story_id)',
+        };
+
         await DocumentClient.put(params).promise();
-        callback(null,call.statement(201,data));
-    }catch(err){
-
-    
-       callback(null,call.statement(500,err.message))
-}
-
-}
+        callback(null, call.statement(201, { story_id: storyId, author, story, date: currentDate, lastEditedId }));
+    } catch (err) {
+        callback(null, call.statement(500, err.message));
+    }
+};

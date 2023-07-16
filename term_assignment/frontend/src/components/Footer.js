@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="footer">
 
-        <p>© 2023 InteractiveTales. All rights reserved.</p>
+        <p>© 2023 StoryConnect. All rights reserved.</p>
     </footer>
   );
 };
