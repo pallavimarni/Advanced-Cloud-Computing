@@ -17,9 +17,18 @@ module.exports.signup = async (event, context, callback) => {
     const userId = uuidv4();
 
     try {
+
+        const responseHeaders = {
+            'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+            'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
+            'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
+        };
+
         if (password !== confirmPassword) {
             callback(null, {
                 statusCode: 400,
+                headers: responseHeaders,
                 body: JSON.stringify({ message: 'Passwords do not match' }),
             });
         } else {
@@ -38,12 +47,14 @@ module.exports.signup = async (event, context, callback) => {
             await DocumentClient.put(params).promise();
             callback(null, {
                 statusCode: 201,
+                headers: responseHeaders,
                 body: JSON.stringify({ message: 'Signup successful', user_id: userId, email, name }),
             });
         }
     } catch (err) {
         callback(null, {
             statusCode: 500,
+            headers: responseHeaders,
             body: JSON.stringify({ message: err.message }),
         });
     }

@@ -14,6 +14,13 @@ module.exports.login = async (event, context, callback) => {
     const { email, password } = JSON.parse(event.body);
 
     try {
+
+        const responseHeaders = {
+            'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
+            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+            'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
+            'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
+        };
         // Retrieve the user record from DynamoDB based on the email
         const params = {
             TableName: CREDENTIALS_TABLE_NAME,
@@ -39,10 +46,12 @@ module.exports.login = async (event, context, callback) => {
             if (password === storedPassword) {
                 callback(null, {
                     statusCode: 200,
+                    headers: responseHeaders,
                     body: JSON.stringify({ message: 'Login successful' }),
                 });
             } else {
                 callback(null, {
+                    headers: responseHeaders,
                     statusCode: 401,
                     body: JSON.stringify({ message: 'Invalid credentials' }),
                 });
@@ -51,6 +60,7 @@ module.exports.login = async (event, context, callback) => {
     } catch (err) {
         callback(null, {
             statusCode: 500,
+            headers: responseHeaders,
             body: JSON.stringify({ message: err.message }),
         });
     }

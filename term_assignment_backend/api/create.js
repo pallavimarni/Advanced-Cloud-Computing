@@ -18,7 +18,7 @@ const SNSClient = new SNS({
 const STORY_TABLE_NAME = process.env.STORY_TABLE_NAME;
 
 module.exports.story = async (event, context, callback) => {
-    const { author, story, lastEditedId } = JSON.parse(event.body);
+    const { author, story, lastEditedId ,title} = JSON.parse(event.body);
     const storyId = uuidv4();
     const currentDate = new Date().toISOString().split('T')[0];
 
@@ -29,6 +29,7 @@ module.exports.story = async (event, context, callback) => {
                 story_id: storyId,
                 author,
                 story,
+                title,
                 date: currentDate,
                 lastEditedId,
             },
