@@ -1,17 +1,11 @@
 const AWS = require('aws-sdk');
-const DynamoDB = require('aws-sdk/clients/dynamodb');
 const { v4: uuidv4 } = require('uuid');
 
-const DocumentClient = new DynamoDB.DocumentClient({
+const SNSClient = new AWS.SNS({
     region: 'us-east-1',
-    maxRetries: 3,
-    httpOptions: {
-        timeout: 5000,
-    },
 });
 
 const STORY_EDITS_TABLE_NAME = process.env.STORY_EDITS_TABLE_NAME;
-const STORY_TABLE_NAME = process.env.STORY_TABLE_NAME;
 
 exports.editStory = async (event, context, callback) => {
     const { story_id, user_id, editedContent } = JSON.parse(event.body);
@@ -36,42 +30,29 @@ exports.editStory = async (event, context, callback) => {
 
     try {
 
-        await DocumentClient.put(params).promise();
+        console.log('Creating or getting SNS topic ARN...');
+        const topicName = `story-topic-${story_id}`;
+        const createTopicResponse = await SNSClient.createTopic({ Name: topicName }).promise();
+        const topicArn = createTopicResponse.TopicArn;
+        console.log('Successfully created SNS topic:', topicArn);
 
-        // Update the lastEditedId in the storyTable
-        const updateParams = {
-            TableName: STORY_TABLE_NAME,
-            Key: {
-                story_id: story_id,
-            },
-            UpdateExpression: 'SET lastEditedId = :editId',
-            ExpressionAttributeValues: {
-                ':editId': editId,
-            },
-            ReturnValues: 'UPDATED_NEW',
+        // Subscribe the user to the SNS topic
+        console.log('Subscribing user to the SNS topic...');
+        const subscribeParams = {
+            TopicArn: topicArn,
+            Protocol: 'email', // Assuming the user_id is the email address
+            Endpoint: user_id,
         };
-        const updateStoryParams = {
-            TableName: STORY_TABLE_NAME,
-            Key: {
-                story_id: story_id,
-            },
-            UpdateExpression: 'SET story = :editedContent',
-            ExpressionAttributeValues: {
-                ':editedContent': editedContent,
-            },
-            ReturnValues: 'UPDATED_NEW',
-        };
-        await DocumentClient.update(updateStoryParams).promise();
-
-        await DocumentClient.update(updateParams).promise();
+        const subscriptionResponse = await SNSClient.subscribe(subscribeParams).promise();
+        console.log('Successfully subscribed to the SNS topic:', subscriptionResponse.SubscriptionArn);
 
         callback(null, {
             statusCode: 200,
             headers: responseHeaders,
             body: JSON.stringify({ message: 'Edit saved successfully' }),
         });
-
     } catch (err) {
+        console.error('Error processing edit:', err);
         callback(null, {
             statusCode: 500,
             headers: responseHeaders,

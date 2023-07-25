@@ -8,19 +8,20 @@ const DocumentClient = new DynamoDB.DocumentClient({
     },
 });
 
+
 const CREDENTIALS_TABLE_NAME = process.env.CREDENTIALS_TABLE_NAME;
 
 module.exports.login = async (event, context, callback) => {
     const { email, password } = JSON.parse(event.body);
 
+    const responseHeaders = {
+        'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
+        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
+        'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
+        'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
+    };
     try {
 
-        const responseHeaders = {
-            'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
-            'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-            'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
-            'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
-        };
         // Retrieve the user record from DynamoDB based on the email
         const params = {
             TableName: CREDENTIALS_TABLE_NAME,
