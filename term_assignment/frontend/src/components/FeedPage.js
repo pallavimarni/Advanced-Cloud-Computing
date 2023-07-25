@@ -64,7 +64,7 @@ const StoryCard = ({ story, onSave, fetchStories }) => {
         // Send the edited content to the SQS queue using the sendMessageToQueue Lambda
         try {
           await axios.post(
-            'https://7s1z4yffh5.execute-api.us-east-1.amazonaws.com/dev/sendMessageToQueue',
+            'https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/sendMessageToQueue',
             requestBody
           );
           console.log('Message sent to SQS queue successfully.');
@@ -148,7 +148,7 @@ const FeedPage = () => {
 
   const fetchStories = () => {
     axios
-      .get('https://7s1z4yffh5.execute-api.us-east-1.amazonaws.com/dev/storyList/getallstories')
+      .get('https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/storyList/getallstories')
       .then((response) => {
         setStories(response.data);
       })
@@ -161,7 +161,7 @@ const FeedPage = () => {
     try {
       // Send the edited content to the API using updatedStory
       const response = await axios.post(
-        'https://7s1z4yffh5.execute-api.us-east-1.amazonaws.com/dev/editStory',
+        'https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/editStory',
         updatedStory
       );
 
@@ -173,7 +173,6 @@ const FeedPage = () => {
       throw error;
     }
   };
-
   return (
     <div className={classes.container}>
       {stories.map((story) => (

@@ -28,13 +28,18 @@ const Header = () => {
             {isLoggedIn ? (
               <>
                 <li className="nav-item">
-                  <Link id="hover" className="nav-link" to="/">
+                  <Link id="hover" className="nav-link" to="/post">
                     Post Story
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link id="hover" className="nav-link" to="/feed">
                     Feed
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link id="hover" className="nav-link" to="/edits">
+                   View Story Edits
                   </Link>
                 </li>
                 <li className="nav-item">

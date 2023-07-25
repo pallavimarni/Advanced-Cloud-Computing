@@ -64,7 +64,7 @@ const Login = () => {
     }
 
     const endpoint = registered ? 'signup' : 'login';
-    const url = `https://7s1z4yffh5.execute-api.us-east-1.amazonaws.com/dev/${endpoint}`;
+    const url = `https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/${endpoint}`;
 
     try {
       const response = await axios.post(url, requestData);
@@ -86,7 +86,7 @@ const Login = () => {
         setErrorMessage('');
 
         // Redirect to the PostStory component after successful login
-        navigate('/');
+        navigate('/feed');
       }
     } catch (error) {
       // Show error message
