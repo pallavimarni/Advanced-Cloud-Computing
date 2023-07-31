@@ -35,16 +35,15 @@ const styles = {
 const ViewStoryEdits = () => {
   const [storyResponses, setStoryResponses] = useState([]);
   const [fetchedStoryEdits, setFetchedStoryEdits] = useState([]);
-  const [showPopup, setShowPopup] = useState(false); // State to control the pop-up visibility
-  const [acceptedStory, setAcceptedStory] = useState(null); // State to store the accepted story
+  const [showPopup, setShowPopup] = useState(false); 
+  const [acceptedStory, setAcceptedStory] = useState(null); 
 
   const userEmail = sessionStorage.getItem('userEmail');
 
   useEffect(() => {
-    // Fetch story_id values from the first API
     const fetchStoryIds = async () => {
       try {
-        const response = await fetch('https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/getStoriesByAuthorEmail', {
+        const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/dev/getStoriesByAuthorEmail`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -66,11 +65,11 @@ const ViewStoryEdits = () => {
   }, [userEmail]);
 
   useEffect(() => {
-    // Fetch story edits for each story_id
+
     const fetchStoryEdits = async () => {
       try {
         const fetchPromises = storyResponses.map(async (story) => {
-          const response = await fetch('https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/findMessagesByStoryID', {
+          const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/dev/findMessagesByStoryID`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -78,10 +77,9 @@ const ViewStoryEdits = () => {
             body: JSON.stringify({
               story_id: story.story_id,
             }),
-            mode: 'cors', // Enable CORS handling
+            mode: 'cors', 
           });
 
-          // Check if the response status is 200 OK before parsing JSON
           if (response.ok) {
             return response.json();
           } else {
@@ -92,7 +90,7 @@ const ViewStoryEdits = () => {
         const results = await Promise.all(fetchPromises);
         const allStoryEdits = results.flat();
 
-        // Merge the new fetched data with the existing data
+    
         setFetchedStoryEdits((prevStoryEdits) => [...prevStoryEdits, ...allStoryEdits]);
       } catch (error) {
         console.error('Error fetching story edits:', error);
@@ -106,26 +104,25 @@ const ViewStoryEdits = () => {
 
   const handleAccept = async (story_id, editedContent) => {
     try {
-      const response = await axios.post('https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/acceptStories', {
+      const response = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/dev/acceptStories`, {
         story_id: story_id,
         editedContent: editedContent,
       }, {
         headers: {
           'Content-Type': 'application/json',
         },
-        mode: 'cors', // Enable CORS handling
+        mode: 'cors',
       });
 
       console.log('Accepted story with ID:', story_id);
       console.log('API Response:', response.data);
 
-      // Set the accepted story to show in the pop-up
+
       setAcceptedStory(response.data.updatedStory);
 
-      // Show the pop-up
+
       setShowPopup(true);
 
-      // Implement any other logic you need after accepting the story
     } catch (error) {
       console.error('Error accepting story:', error);
     }

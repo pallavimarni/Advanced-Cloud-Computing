@@ -1,32 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, makeStyles, Card, CardContent, Button, TextField } from '@material-ui/core';
+import { Card, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    marginTop: theme.spacing(4),
-  },
-  card: {
-    marginBottom: theme.spacing(2),
-  },
-  title: {
-    fontWeight: 'bold',
-    marginBottom: theme.spacing(1),
-  },
-  author: {
-    marginBottom: theme.spacing(1),
-  },
-  content: {
-    marginBottom: theme.spacing(1),
-  },
-  editButton: {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
 const StoryCard = ({ story, onSave, fetchStories }) => {
-  const classes = useStyles();
-
   const [editableStoryId, setEditableStoryId] = useState(null);
   const [editedStoryContent, setEditedStoryContent] = useState('');
 
@@ -36,17 +12,15 @@ const StoryCard = ({ story, onSave, fetchStories }) => {
 
   const handleEditClick = () => {
     if (isStoryEditable()) {
-      // Clicking on the same "Edit" button again will save the edit
       handleSaveClick();
     } else {
-      // Clicking on a different "Edit" button will make that story editable
       setEditableStoryId(story.story_id);
       setEditedStoryContent(story.content);
     }
   };
 
   const handleStoryChange = (event) => {
-    setEditedStoryContent(event.target.value); // Update the edited content state
+    setEditedStoryContent(event.target.value);
   };
 
   const handleSaveClick = async () => {
@@ -58,13 +32,11 @@ const StoryCard = ({ story, onSave, fetchStories }) => {
       };
 
       try {
-        // Call the onSave function to send the edited content to the API
         await onSave(requestBody);
 
-        // Send the edited content to the SQS queue using the sendMessageToQueue Lambda
         try {
           await axios.post(
-            'https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/sendMessageToQueue',
+            `${process.env.REACT_APP_API_ENDPOINT}/dev/sendMessageToQueue`,
             requestBody
           );
           console.log('Message sent to SQS queue successfully.');
@@ -72,16 +44,14 @@ const StoryCard = ({ story, onSave, fetchStories }) => {
           console.error('Error sending message to SQS queue:', error);
         }
 
-        // Fetch the updated stories from the API after successful edit
         fetchStories();
 
-        // Show a message to the user that changes have been sent
-        alert('Your changes have been sent to the author. Your changes will be reflected if the author accepts them.');
-
+        alert(
+          'Your changes have been sent to the author. Your changes will be reflected if the author accepts them.'
+        );
       } catch (error) {
         console.error('Error saving story:', error);
       } finally {
-        // Clear the editable story state after saving
         setEditableStoryId(null);
         setEditedStoryContent('');
       }
@@ -89,66 +59,54 @@ const StoryCard = ({ story, onSave, fetchStories }) => {
   };
 
   return (
-    <Card className={classes.card}>
-      <CardContent>
-        <Typography variant="h6" className={classes.title}>
-          {story.title}
-        </Typography>
-        <Typography variant="subtitle1" className={classes.author}>
-          {story.author}
-        </Typography>
+    <Card className="story-card">
+      <Card.Body>
+        <h6>{story.title}</h6>
+        <p>{story.author}</p>
         {isStoryEditable() ? (
           <>
-            <TextField
-              multiline
+            <Form.Control
+              as="textarea"
               rows={4}
-              variant="outlined"
-              fullWidth
-              value={editedStoryContent} // Bind the value to the edited content state
-              onChange={handleStoryChange} // Call handleStoryChange on text change
+              placeholder="Enter your story"
+              value={editedStoryContent}
+              onChange={handleStoryChange}
+              className="edit-textarea"
             />
             <br />
             <br />
-            <Button variant="contained" color="primary" onClick={handleSaveClick}>
+            <Button variant="primary" onClick={handleSaveClick}>
               Save
             </Button>
           </>
         ) : (
           <>
-            <Typography variant="body1" className={classes.content}>
-              {story.content}
-            </Typography>
-            <Typography variant="caption" color="textSecondary">
-              Posted on: {story.date}
-            </Typography>
+            <p>{story.content}</p>
+            <p className="posted-date">Posted on: {story.date}</p>
             <Button
-              variant="outlined"
-              color="primary"
-              className={classes.editButton}
+              variant="outline-primary"
+              className="edit-button"
               onClick={handleEditClick}
             >
               {isStoryEditable() ? 'Cancel' : 'Edit'}
             </Button>
           </>
         )}
-      </CardContent>
+      </Card.Body>
     </Card>
   );
 };
 
 const FeedPage = () => {
-  const classes = useStyles();
-
   const [stories, setStories] = useState([]);
 
   useEffect(() => {
-    // Fetch the stories from the API when the component mounts
     fetchStories();
   }, []);
 
   const fetchStories = () => {
     axios
-      .get('https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/storyList/getallstories')
+      .get(`${process.env.REACT_APP_API_ENDPOINT}/dev/storyList/getallstories`)
       .then((response) => {
         setStories(response.data);
       })
@@ -159,13 +117,11 @@ const FeedPage = () => {
 
   const handleSaveStory = async (updatedStory) => {
     try {
-      // Send the edited content to the API using updatedStory
       const response = await axios.post(
-        'https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/editStory',
+        `${process.env.REACT_APP_API_ENDPOINT}/dev/editStory`,
         updatedStory
       );
 
-      // Fetch the updated stories from the API after successful edit
       fetchStories();
 
       return response.data;
@@ -173,10 +129,16 @@ const FeedPage = () => {
       throw error;
     }
   };
+
   return (
-    <div className={classes.container}>
+    <div className="container">
       {stories.map((story) => (
-        <StoryCard key={story.story_id} story={story} onSave={handleSaveStory} fetchStories={fetchStories} />
+        <StoryCard
+          key={story.story_id}
+          story={story}
+          onSave={handleSaveStory}
+          fetchStories={fetchStories}
+        />
       ))}
     </div>
   );

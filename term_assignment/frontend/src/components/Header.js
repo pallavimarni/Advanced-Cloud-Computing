@@ -5,15 +5,15 @@ import { Link, useNavigate} from 'react-router-dom';
 const Header = () => {
   const navigate = useNavigate();
 
-  // Function to handle user logout
+
   const handleLogout = () => {
-    // Clear the email from sessionStorage
+
     sessionStorage.removeItem('userEmail');
-    // Redirect the user to the login page
+ 
     navigate('/login');
   };
 
-  // Check if the user is logged in (email is in sessionStorage)
+
   const isLoggedIn = sessionStorage.getItem('userEmail');
 
   return (
@@ -24,7 +24,7 @@ const Header = () => {
         </Link>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ml-auto mb-2 mb-lg-0">
-            {/* Show different links based on user login status */}
+     
             {isLoggedIn ? (
               <>
                 <li className="nav-item">

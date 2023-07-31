@@ -64,32 +64,27 @@ const Login = () => {
     }
 
     const endpoint = registered ? 'signup' : 'login';
-    const url = `https://8cgdnk54o0.execute-api.us-east-1.amazonaws.com/dev/${endpoint}`;
+    const url = `${process.env.REACT_APP_API_ENDPOINT}/dev/${endpoint}`;
 
     try {
       const response = await axios.post(url, requestData);
 
       if (endpoint === 'signup') {
-        // Show success message for signup
+  
         setSuccessMessage(response.data.message);
         setErrorMessage('');
-
-        // Redirect to the login page after successful signup
         navigateToLogin();
       } else {
-        // Login successful
-        // Store the user's email in sessionStorage
+ 
         sessionStorage.setItem('userEmail', email);
 
-        // Show success message for login
         setSuccessMessage(response.data.message);
         setErrorMessage('');
 
-        // Redirect to the PostStory component after successful login
         navigate('/feed');
       }
     } catch (error) {
-      // Show error message
+
       setErrorMessage('An error occurred. Please try again.');
       setSuccessMessage('');
     }
