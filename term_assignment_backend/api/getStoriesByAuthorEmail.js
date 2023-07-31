@@ -4,10 +4,10 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
 exports.getStoriesByAuthorEmail = async (event) => {
     const { email } = JSON.parse(event.body);
     const responseHeaders = {
-        'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-        'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
-        'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
+        'Access-Control-Allow-Methods': 'POST',
+        'Access-Control-Allow-Credentials': true,
     };
     if (!email) {
         return {
@@ -18,7 +18,7 @@ exports.getStoriesByAuthorEmail = async (event) => {
     }
 
     const params = {
-        TableName: 'storyTable', // Replace with the actual table name
+        TableName: 'storyTable',
         FilterExpression: 'author = :email',
         ExpressionAttributeValues: {
             ':email': email,
@@ -26,13 +26,13 @@ exports.getStoriesByAuthorEmail = async (event) => {
         ProjectionExpression: 'author, story_id',
     };
 
-    console.log('Params:', params); // Add this logging statement to check the parameters
+    console.log('Params:', params);
 
     try {
         const result = await dynamoDB.scan(params).promise();
         const stories = result.Items;
 
-        console.log('Result:', result); // Add this logging statement to check the scan result
+        console.log('Result:', result);
 
         return {
             statusCode: 200,

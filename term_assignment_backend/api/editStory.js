@@ -12,10 +12,10 @@ exports.editStory = async (event, context, callback) => {
     const editedTimestamp = new Date().toISOString();
     const editId = uuidv4();
     const responseHeaders = {
-        'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-        'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
-        'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
+        'Access-Control-Allow-Methods': 'POST',
+        'Access-Control-Allow-Credentials': true,
     };
     const params = {
         TableName: STORY_EDITS_TABLE_NAME,
@@ -36,11 +36,10 @@ exports.editStory = async (event, context, callback) => {
         const topicArn = createTopicResponse.TopicArn;
         console.log('Successfully created SNS topic:', topicArn);
 
-        // Subscribe the user to the SNS topic
         console.log('Subscribing user to the SNS topic...');
         const subscribeParams = {
             TopicArn: topicArn,
-            Protocol: 'email', // Assuming the user_id is the email address
+            Protocol: 'email',
             Endpoint: user_id,
         };
         const subscriptionResponse = await SNSClient.subscribe(subscribeParams).promise();

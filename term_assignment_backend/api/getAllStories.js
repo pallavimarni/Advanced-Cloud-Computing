@@ -8,10 +8,10 @@ exports.getAllStories = async (event, context, callback) => {
     try {
 
         const responseHeaders = {
-            'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-            'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
-            'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Credentials': true,
         };
         const scanParams = {
             TableName: STORY_TABLE_NAME,

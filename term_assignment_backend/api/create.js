@@ -38,19 +38,16 @@ module.exports.story = async (event, context, callback) => {
 
         await DocumentClient.put(params).promise();
 
-        // Create an SNS topic for the story
         const topicParams = {
-            Name: `story-topic-${storyId}`, // Provide a unique name for the topic
+            Name: `story-topic-${storyId}`,
         };
         const createTopicResponse = await SNSClient.createTopic(topicParams).promise();
 
         const topicArn = createTopicResponse.TopicArn;
-
-        // Subscribe the author to the SNS topic
         const subscribeParams = {
             TopicArn: topicArn,
             Protocol: 'email',
-            Endpoint: author, // Assuming the author is the email address
+            Endpoint: author,
         };
         await SNSClient.subscribe(subscribeParams).promise();
 

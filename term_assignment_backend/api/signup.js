@@ -19,10 +19,10 @@ module.exports.signup = async (event, context, callback) => {
     try {
 
         const responseHeaders = {
-            'Access-Control-Allow-Origin': '*', // Replace '*' with the actual domain of your frontend
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
-            'Access-Control-Allow-Methods': 'POST', // Replace 'POST' with the allowed methods (e.g., 'GET, POST')
-            'Access-Control-Allow-Credentials': true, // If you need to send credentials (cookies, etc.) in the request
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Credentials': true,
         };
 
         if (password !== confirmPassword) {
@@ -32,7 +32,7 @@ module.exports.signup = async (event, context, callback) => {
                 body: JSON.stringify({ message: 'Passwords do not match' }),
             });
         } else {
-            // Save user details to the credentials table in DynamoDB
+
             const params = {
                 TableName: CREDENTIALS_TABLE_NAME,
                 Item: {
