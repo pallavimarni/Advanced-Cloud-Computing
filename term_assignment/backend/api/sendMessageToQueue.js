@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const sqs = new AWS.SQS({ region: 'us-east-1' }); // Replace 'us-east-1' with your desired region
+const sqs = new AWS.SQS({ region: 'us-east-1' });
 
 exports.sendMessageToQueue = async (event, context, callback) => {
     const requestBody = JSON.parse(event.body);
